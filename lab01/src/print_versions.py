@@ -2,12 +2,12 @@ import sys
 import warnings
 from pathlib import Path
 
-# Silence deprecation/future warnings from PyTorch/pynvml
+
 warnings.filterwarnings("ignore")
 
 
 def main():
-    # Resolve directory paths relative to this script
+    
     script_dir = Path(__file__).resolve().parent
     results_dir = script_dir.parent / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -45,7 +45,7 @@ def main():
     version_lines = [f"python=={sys.version.split()[0]}"]
 
     for pkg_name in packages:
-        # Import name mapping for sklearn and memory_profiler
+      
         module_import_name = pkg_name
         if pkg_name == "scikit-learn":
             module_import_name = "sklearn"
@@ -67,7 +67,6 @@ def main():
 
     content = "\n".join(version_lines) + "\n"
 
-    # Write directly to lab01/results/versions.txt
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(content)
 

@@ -14,10 +14,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-# Suppress minor warnings
-warnings.filterwarnings("ignore")
 
-# Global random seed configuration
+
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
@@ -37,7 +35,7 @@ def measure_peak_memory_mb(func, *args, **kwargs):
 
 def benchmark_training(model_cls, kwargs, X_train, y_train):
     """Task 3: Warm up once, repeat 5 times, return trained model, median time, and peak memory delta."""
-    # 1 Warm-up run
+   
     warmup_model = model_cls(**kwargs)
     warmup_model.fit(X_train, y_train)
 
@@ -45,7 +43,7 @@ def benchmark_training(model_cls, kwargs, X_train, y_train):
     mem_deltas = []
     fitted_model = None
 
-    # Repeat 5 times
+   
     for _ in range(5):
         m = model_cls(**kwargs)
         start = time.perf_counter()
@@ -63,13 +61,13 @@ def benchmark_inference(model, X_test):
     """Task 3: Repeat single-sample inference 100 times, return median latency (ms) and peak memory."""
     single_sample = X_test[:1]
 
-    # Warm-up run
+
     model.predict(single_sample)
 
     latencies_ms = []
     mem_deltas = []
 
-    # Repeat 100 times for single-sample latency
+
     for _ in range(100):
         start = time.perf_counter()
         _, peak_mem = measure_peak_memory_mb(model.predict, single_sample)
@@ -86,9 +84,6 @@ def main():
     results_dir = script_dir.parent / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
 
-    # -------------------------------------------------------------------------
-    # Task 2: Dataset Loading, 70/30 Stratified Split, Baseline Training
-    # -------------------------------------------------------------------------
     X, y = load_breast_cancer(return_X_y=True)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.30, stratify=y, random_state=SEED
@@ -110,26 +105,21 @@ def main():
     acc_records = []
     system_records = []
 
-    # -------------------------------------------------------------------------
-    # Task 3: Measure System Cost
-    # -------------------------------------------------------------------------
     for name, cfg in models_config.items():
-        # Training benchmark (1 warm-up, 5 runs)
         model, med_train_sec, peak_train_mem = benchmark_training(
             cfg["class"], cfg["kwargs"], X_train, y_train
         )
 
-        # Accuracy evaluation to 4 decimals
+
         y_pred = model.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
         acc_records.append({"Model": name, "Accuracy": f"{acc:.4f}"})
 
-        # Save model with joblib.dump and calculate file sizes
         joblib.dump(model, cfg["file"])
         model_size_bytes = cfg["file"].stat().st_size
         model_size_kb = model_size_bytes / 1024.0
 
-        # Single-sample inference benchmark (100 repetitions)
+     
         med_infer_ms, peak_infer_mem = benchmark_inference(model, X_test)
 
         system_records.append(
@@ -144,12 +134,11 @@ def main():
             }
         )
 
-    # Save Task 2 Accuracy File
+  
     df_acc = pd.DataFrame(acc_records)
     df_acc.to_csv(results_dir / "baseline_accuracy.csv", index=False)
     print(f"Saved Task 2 accuracy results to {results_dir / 'baseline_accuracy.csv'}")
 
-    # Save Task 3 System Cost File
     df_sys = pd.DataFrame(system_records)
     df_sys.to_csv(results_dir / "system_metrics.csv", index=False)
     print(f"Saved Task 3 system metrics to {results_dir / 'system_metrics.csv'}")
