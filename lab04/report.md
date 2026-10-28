@@ -8,3 +8,9 @@ We took thousands of census income records containing worker information, checke
 ![alt text](image-1.png)
 
 4. Conclussion
+
+ Prevention of Data Leakage: Executing the train/test split prior to fitting numerical imputers, scalers, and percentile bounds prevented test set statistics from leaking into the training workflow, ensuring reliable generalization evaluation.
+
+ Value of Feature Engineering: Adding net capital gain and age-adjusted working hours improved both classification accuracy and F1-score over the raw feature baseline.
+
+ Quality Auditing and Reproducibility: Identifying duplicate feature instances with conflicting class labels highlighted potential noise in census records, while exporting fitted transformers and dataset SHA256 hashes ensured full pipeline reproducibility.
