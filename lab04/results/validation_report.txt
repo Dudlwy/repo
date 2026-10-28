@@ -1,0 +1,20 @@
+Missing ('?') Counts:
+age               0
+workclass         0
+fnlwgt            0
+education         0
+education-num     0
+marital-status    0
+occupation        0
+relationship      0
+race              0
+sex               0
+capital-gain      0
+capital-loss      0
+hours-per-week    0
+native-country    0
+class             0
+age range violations: 0
+hours-per-week range violations: 0
+capital-gain range violations: 0
+capital-loss range violations: 0
